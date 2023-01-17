@@ -131,6 +131,14 @@ static void stm32f405_soc_realize(DeviceState *dev_soc, Error **errp)
     memory_region_add_subregion(system_memory, FLASH_BASE_ADDRESS, &s->flash);
     memory_region_add_subregion(system_memory, 0, &s->flash_alias);
 
+    memory_region_init_ram(&s->ccm, NULL, "STM32F405.ccm", CCM_SIZE,
+                           &err);
+    if (err != NULL) {
+        error_propagate(errp, err);
+        return;
+    }
+    memory_region_add_subregion(system_memory, CCM_BASE_ADDRESS, &s->ccm);
+
     memory_region_init_ram(&s->sram, NULL, "STM32F405.sram", SRAM_SIZE,
                            &err);
     if (err != NULL) {
